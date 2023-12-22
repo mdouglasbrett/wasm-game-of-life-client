@@ -17,6 +17,8 @@ canvas.width = (CELL_SIZE + 1) * width + 1;
 
 const ctx = canvas.getContext("2d");
 
+let animationId = null;
+
 const drawGrid = () => {
     ctx.beginPath();
     ctx.strokeStyle = GRID_COLOR;
@@ -61,6 +63,9 @@ const drawCells = () => {
     ctx.stroke();
 }
 
+const isPaused = () => {
+    return animationId === null;
+}
 
 const renderLoop = () => {
     //debugger;
@@ -69,7 +74,28 @@ const renderLoop = () => {
     drawGrid();
     drawCells();
 
-    requestAnimationFrame(renderLoop);
+    animationId = requestAnimationFrame(renderLoop);
 };
 
-requestAnimationFrame(renderLoop);
+const playPauseButton = document.getElementById("play-pause");
+
+const play = () => {
+    playPauseButton.textContent = "⏸️";
+    renderLoop();
+};
+
+const pause = () => {
+    playPauseButton.textContent = "▶️";
+    cancelAnimationFrame(animationId);
+    animationId = null;
+};
+
+playPauseButton.addEventListener("click", e => {
+    if (isPaused()) {
+        play();
+    } else {
+        pause();
+    }
+});
+
+play();
