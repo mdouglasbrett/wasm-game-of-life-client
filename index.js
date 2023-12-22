@@ -1,11 +1,10 @@
-import { Universe, Cell } from "wasm-game-of-life";
+import { Cell, Universe } from "wasm-game-of-life";
 import { memory } from "wasm-game-of-life/wasm_game_of_life_bg";
 
 const CELL_SIZE = 5; // pixels
 const GRID_COLOR = "#CCCCCC";
 const DEAD_COLOR = "#FFFFFF";
 const ALIVE_COLOR = "#000000";
-
 
 const universe = Universe.new();
 const width = universe.width();
@@ -33,11 +32,11 @@ const drawGrid = () => {
         ctx.lineTo((CELL_SIZE + 1) * width + 1, j * (CELL_SIZE + 1) + 1);
     }
     ctx.stroke();
-}
+};
 
 const getIndex = (row, column) => {
     return row * width + column;
-}
+};
 
 const drawCells = () => {
     const cellsPtr = universe.cells();
@@ -48,24 +47,120 @@ const drawCells = () => {
         for (let col = 0; col < width; col++) {
             const idx = getIndex(row, col);
 
-            ctx.fillStyle = cells[idx] === Cell.Dead
-                ? DEAD_COLOR
-                : ALIVE_COLOR;
+            ctx.fillStyle = cells[idx] === Cell.Dead ? DEAD_COLOR : ALIVE_COLOR;
 
             ctx.fillRect(
                 col * (CELL_SIZE + 1) + 1,
                 row * (CELL_SIZE + 1) + 1,
                 CELL_SIZE,
-                CELL_SIZE
+                CELL_SIZE,
             );
         }
     }
     ctx.stroke();
-}
+};
+
+const drawPulsar = (row, col) => {
+    // TODO: I am going to do this longhand for now...
+
+    // Upper left arm
+    universe.toggle(row - 1, col - 2);
+    universe.toggle(row - 1, col - 3);
+    universe.toggle(row - 1, col - 4);
+    universe.toggle(row - 2, col - 1);
+    universe.toggle(row - 3, col - 1);
+    universe.toggle(row - 4, col - 1);
+    universe.toggle(row - 6, col - 2);
+    universe.toggle(row - 6, col - 3);
+    universe.toggle(row - 6, col - 4);
+    universe.toggle(row - 2, col - 6);
+    universe.toggle(row - 3, col - 6);
+    universe.toggle(row - 4, col - 6);
+
+    // Upper right arm
+    universe.toggle(row - 1, col + 2);
+    universe.toggle(row - 1, col + 3);
+    universe.toggle(row - 1, col + 4);
+    universe.toggle(row - 2, col + 1);
+    universe.toggle(row - 3, col + 1);
+    universe.toggle(row - 4, col + 1);
+    universe.toggle(row - 6, col + 2);
+    universe.toggle(row - 6, col + 3);
+    universe.toggle(row - 6, col + 4);
+    universe.toggle(row - 2, col + 6);
+    universe.toggle(row - 3, col + 6);
+    universe.toggle(row - 4, col + 6);
+
+    // Lower left arm
+    universe.toggle(row + 1, col - 2);
+    universe.toggle(row + 1, col - 3);
+    universe.toggle(row + 1, col - 4);
+    universe.toggle(row + 2, col - 1);
+    universe.toggle(row + 3, col - 1);
+    universe.toggle(row + 4, col - 1);
+    universe.toggle(row + 6, col - 2);
+    universe.toggle(row + 6, col - 3);
+    universe.toggle(row + 6, col - 4);
+    universe.toggle(row + 2, col - 6);
+    universe.toggle(row + 3, col - 6);
+    universe.toggle(row + 4, col - 6);
+
+    // Lower right arm
+    universe.toggle(row + 1, col + 2);
+    universe.toggle(row + 1, col + 3);
+    universe.toggle(row + 1, col + 4);
+    universe.toggle(row + 2, col + 1);
+    universe.toggle(row + 3, col + 1);
+    universe.toggle(row + 4, col + 1);
+    universe.toggle(row + 6, col + 2);
+    universe.toggle(row + 6, col + 3);
+    universe.toggle(row + 6, col + 4);
+    universe.toggle(row + 2, col + 6);
+    universe.toggle(row + 3, col + 6);
+    universe.toggle(row + 4, col + 6);
+};
+const drawGlider = (row, col) => {
+    // TODO: Do this in one pass? With some kind of array?
+    universe.toggle(row, col);
+    universe.toggle(row + 1, col);
+    universe.toggle(row, col + 1);
+    universe.toggle(row - 1, col + 1);
+    universe.toggle(row - 1, col - 1);
+};
+
+canvas.addEventListener("click", (e) => {
+    console.log(e);
+    const boundingRect = canvas.getBoundingClientRect();
+
+    const scaleX = canvas.width / boundingRect.width;
+    const scaleY = canvas.height / boundingRect.height;
+
+    const canvasLeft = (e.clientX - boundingRect.left) * scaleX;
+    const canvasTop = (e.clientY - boundingRect.top) * scaleY;
+
+    const row = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height - 1);
+    const col = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), width - 1);
+
+    switch (true) {
+        case e.ctrlKey:
+        case e.metaKey:
+            drawGlider(row, col);
+            break;
+        case e.shiftKey:
+            drawPulsar(row, col);
+            break;
+        default:
+            universe.toggle(row, col);
+            break;
+    }
+
+    drawGrid();
+    drawCells();
+});
 
 const isPaused = () => {
     return animationId === null;
-}
+};
 
 const renderLoop = () => {
     //debugger;
@@ -90,7 +185,7 @@ const pause = () => {
     animationId = null;
 };
 
-playPauseButton.addEventListener("click", e => {
+playPauseButton.addEventListener("click", (e) => {
     if (isPaused()) {
         play();
     } else {
