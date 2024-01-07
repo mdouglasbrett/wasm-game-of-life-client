@@ -19,6 +19,11 @@
         .controls {
             display: flex;
         }
+
+        #fps {
+            white-space: pre;
+            font-family: monospace;
+        }
     </style>
 </head>
 
@@ -33,6 +38,7 @@
     <input type="range" id="ticks-per-frame" />
     -->
     </div>
+    <div id="fps"></div>
     <canvas id="game-of-life-canvas"></canvas>
     <script src="./bootstrap.js"></script>
 </body>
