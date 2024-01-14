@@ -219,6 +219,8 @@ const renderLoop = () => {
 };
 
 const playPauseButton = document.getElementById("play-pause");
+const clearButton = document.getElementById("clear");
+const restartButton = document.getElementById("restart");
 
 const play = () => {
     playPauseButton.textContent = "⏸️";
@@ -231,12 +233,35 @@ const pause = () => {
     animationId = null;
 };
 
-playPauseButton.addEventListener("click", (e) => {
+const clear = () => {
+    // TODO:
+    console.log('clear button clicked');
+    pause();
+    universe.clear();
+    drawGrid();
+    drawCells();
+}
+
+// TODO: getting a weird loop here
+const restart = () => {
+    universe.reset();
+    play();
+}
+
+clearButton.addEventListener("click", () => {
+    clear();
+})
+
+playPauseButton.addEventListener("click", () => {
     if (isPaused()) {
         play();
     } else {
         pause();
     }
+});
+
+restartButton.addEventListener("click", () => {
+    restart();
 });
 
 play();
