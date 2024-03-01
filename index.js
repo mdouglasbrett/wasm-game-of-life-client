@@ -62,62 +62,64 @@ const drawCells = () => {
 
 const drawPulsar = (row, col) => {
     // TODO: I am going to do this longhand for now...
+    // Need something like: universe.draw([[row -1, col-2], [row - 1, col - 3]])
+    universe.draw(
+        [
+            // Upper left arm
+            [row - 1, col - 2],
+            [row - 1, col - 3],
+            [row - 1, col - 4],
+            [row - 2, col - 1],
+            [row - 3, col - 1],
+            [row - 4, col - 1],
+            [row - 6, col - 2],
+            [row - 6, col - 3],
+            [row - 6, col - 4],
+            [row - 2, col - 6],
+            [row - 3, col - 6],
+            [row - 4, col - 6],
+            // Upper right arm
+            [row - 1, col + 2],
+            [row - 1, col + 3],
+            [row - 1, col + 4],
+            [row - 2, col + 1],
+            [row - 3, col + 1],
+            [row - 4, col + 1],
+            [row - 6, col + 2],
+            [row - 6, col + 3],
+            [row - 6, col + 4],
+            [row - 2, col + 6],
+            [row - 3, col + 6],
+            [row - 4, col + 6],
+            // Lower left arm
+            [row + 1, col - 2],
+            [row + 1, col - 3],
+            [row + 1, col - 4],
+            [row + 2, col - 1],
+            [row + 3, col - 1],
+            [row + 4, col - 1],
+            [row + 6, col - 2],
+            [row + 6, col - 3],
+            [row + 6, col - 4],
+            [row + 2, col - 6],
+            [row + 3, col - 6],
+            [row + 4, col - 6],
+            // Lower right arm
+            [row + 1, col + 2],
+            [row + 1, col + 3],
+            [row + 1, col + 4],
+            [row + 2, col + 1],
+            [row + 3, col + 1],
+            [row + 4, col + 1],
+            [row + 6, col + 2],
+            [row + 6, col + 3],
+            [row + 6, col + 4],
+            [row + 2, col + 6],
+            [row + 3, col + 6],
+            [row + 4, col + 6],
+        ],
+    );
 
-    // Upper left arm
-    universe.toggle(row - 1, col - 2);
-    universe.toggle(row - 1, col - 3);
-    universe.toggle(row - 1, col - 4);
-    universe.toggle(row - 2, col - 1);
-    universe.toggle(row - 3, col - 1);
-    universe.toggle(row - 4, col - 1);
-    universe.toggle(row - 6, col - 2);
-    universe.toggle(row - 6, col - 3);
-    universe.toggle(row - 6, col - 4);
-    universe.toggle(row - 2, col - 6);
-    universe.toggle(row - 3, col - 6);
-    universe.toggle(row - 4, col - 6);
-
-    // Upper right arm
-    universe.toggle(row - 1, col + 2);
-    universe.toggle(row - 1, col + 3);
-    universe.toggle(row - 1, col + 4);
-    universe.toggle(row - 2, col + 1);
-    universe.toggle(row - 3, col + 1);
-    universe.toggle(row - 4, col + 1);
-    universe.toggle(row - 6, col + 2);
-    universe.toggle(row - 6, col + 3);
-    universe.toggle(row - 6, col + 4);
-    universe.toggle(row - 2, col + 6);
-    universe.toggle(row - 3, col + 6);
-    universe.toggle(row - 4, col + 6);
-
-    // Lower left arm
-    universe.toggle(row + 1, col - 2);
-    universe.toggle(row + 1, col - 3);
-    universe.toggle(row + 1, col - 4);
-    universe.toggle(row + 2, col - 1);
-    universe.toggle(row + 3, col - 1);
-    universe.toggle(row + 4, col - 1);
-    universe.toggle(row + 6, col - 2);
-    universe.toggle(row + 6, col - 3);
-    universe.toggle(row + 6, col - 4);
-    universe.toggle(row + 2, col - 6);
-    universe.toggle(row + 3, col - 6);
-    universe.toggle(row + 4, col - 6);
-
-    // Lower right arm
-    universe.toggle(row + 1, col + 2);
-    universe.toggle(row + 1, col + 3);
-    universe.toggle(row + 1, col + 4);
-    universe.toggle(row + 2, col + 1);
-    universe.toggle(row + 3, col + 1);
-    universe.toggle(row + 4, col + 1);
-    universe.toggle(row + 6, col + 2);
-    universe.toggle(row + 6, col + 3);
-    universe.toggle(row + 6, col + 4);
-    universe.toggle(row + 2, col + 6);
-    universe.toggle(row + 3, col + 6);
-    universe.toggle(row + 4, col + 6);
 };
 const drawGlider = (row, col) => {
     // TODO: Do this in one pass? With some kind of array?
@@ -168,10 +170,8 @@ const fps = new class {
         min of last 100 = ${Math.round(min)}
         max of last 100 = ${Math.round(max)}
         `.trim();
-
     }
-        
-}
+}();
 
 canvas.addEventListener("click", (e) => {
     console.log(e);
@@ -235,22 +235,22 @@ const pause = () => {
 
 const clear = () => {
     // TODO:
-    console.log('clear button clicked');
+    console.log("clear button clicked");
     pause();
     universe.clear();
     drawGrid();
     drawCells();
-}
+};
 
 // TODO: getting a weird loop here
 const restart = () => {
     universe.reset();
     play();
-}
+};
 
 clearButton.addEventListener("click", () => {
     clear();
-})
+});
 
 playPauseButton.addEventListener("click", () => {
     if (isPaused()) {
