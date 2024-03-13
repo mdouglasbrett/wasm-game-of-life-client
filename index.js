@@ -17,247 +17,266 @@ canvas.width = (CELL_SIZE + 1) * width + 1;
 const ctx = canvas.getContext("2d");
 
 let animationId = null;
+let TPF = 1;
 
 const drawGrid = () => {
-    ctx.beginPath();
-    ctx.strokeStyle = GRID_COLOR;
+  ctx.beginPath();
+  ctx.strokeStyle = GRID_COLOR;
 
-    for (let i = 0; i <= width; i++) {
-        ctx.moveTo(i * (CELL_SIZE + 1) + 1, 0);
-        ctx.lineTo(i * (CELL_SIZE + 1) + 1, (CELL_SIZE + 1) * height + 1);
-    }
+  for (let i = 0; i <= width; i++) {
+    ctx.moveTo(i * (CELL_SIZE + 1) + 1, 0);
+    ctx.lineTo(i * (CELL_SIZE + 1) + 1, (CELL_SIZE + 1) * height + 1);
+  }
 
-    for (let j = 0; j <= height; j++) {
-        ctx.moveTo(0, j * (CELL_SIZE + 1) + 1);
-        ctx.lineTo((CELL_SIZE + 1) * width + 1, j * (CELL_SIZE + 1) + 1);
-    }
-    ctx.stroke();
+  for (let j = 0; j <= height; j++) {
+    ctx.moveTo(0, j * (CELL_SIZE + 1) + 1);
+    ctx.lineTo((CELL_SIZE + 1) * width + 1, j * (CELL_SIZE + 1) + 1);
+  }
+  ctx.stroke();
 };
 
 const getIndex = (row, column) => {
-    return row * width + column;
+  return row * width + column;
 };
 
 const drawCells = () => {
-    const cellsPtr = universe.cells();
-    const cells = new Uint8Array(memory.buffer, cellsPtr, width * height);
+  const cellsPtr = universe.cells();
+  const cells = new Uint8Array(memory.buffer, cellsPtr, width * height);
 
-    ctx.beginPath();
-    for (let row = 0; row < height; row++) {
-        for (let col = 0; col < width; col++) {
-            const idx = getIndex(row, col);
+  ctx.beginPath();
+  for (let row = 0; row < height; row++) {
+    for (let col = 0; col < width; col++) {
+      const idx = getIndex(row, col);
 
-            ctx.fillStyle = cells[idx] === Cell.Dead ? DEAD_COLOR : ALIVE_COLOR;
+      ctx.fillStyle = cells[idx] === Cell.Dead ? DEAD_COLOR : ALIVE_COLOR;
 
-            ctx.fillRect(
-                col * (CELL_SIZE + 1) + 1,
-                row * (CELL_SIZE + 1) + 1,
-                CELL_SIZE,
-                CELL_SIZE,
-            );
-        }
+      ctx.fillRect(
+        col * (CELL_SIZE + 1) + 1,
+        row * (CELL_SIZE + 1) + 1,
+        CELL_SIZE,
+        CELL_SIZE,
+      );
     }
-    ctx.stroke();
+  }
+  ctx.stroke();
 };
 
 const drawPulsar = (row, col) => {
-    universe.draw([
-        // Upper left arm
-        [row - 1, col - 2],
-        [row - 1, col - 3],
-        [row - 1, col - 4],
-        [row - 2, col - 1],
-        [row - 3, col - 1],
-        [row - 4, col - 1],
-        [row - 6, col - 2],
-        [row - 6, col - 3],
-        [row - 6, col - 4],
-        [row - 2, col - 6],
-        [row - 3, col - 6],
-        [row - 4, col - 6],
-        // Upper right arm
-        [row - 1, col + 2],
-        [row - 1, col + 3],
-        [row - 1, col + 4],
-        [row - 2, col + 1],
-        [row - 3, col + 1],
-        [row - 4, col + 1],
-        [row - 6, col + 2],
-        [row - 6, col + 3],
-        [row - 6, col + 4],
-        [row - 2, col + 6],
-        [row - 3, col + 6],
-        [row - 4, col + 6],
-        // Lower left arm
-        [row + 1, col - 2],
-        [row + 1, col - 3],
-        [row + 1, col - 4],
-        [row + 2, col - 1],
-        [row + 3, col - 1],
-        [row + 4, col - 1],
-        [row + 6, col - 2],
-        [row + 6, col - 3],
-        [row + 6, col - 4],
-        [row + 2, col - 6],
-        [row + 3, col - 6],
-        [row + 4, col - 6],
-        // Lower right arm
-        [row + 1, col + 2],
-        [row + 1, col + 3],
-        [row + 1, col + 4],
-        [row + 2, col + 1],
-        [row + 3, col + 1],
-        [row + 4, col + 1],
-        [row + 6, col + 2],
-        [row + 6, col + 3],
-        [row + 6, col + 4],
-        [row + 2, col + 6],
-        [row + 3, col + 6],
-        [row + 4, col + 6],
-    ]);
+  universe.draw([
+    // Upper left arm
+    [row - 1, col - 2],
+    [row - 1, col - 3],
+    [row - 1, col - 4],
+    [row - 2, col - 1],
+    [row - 3, col - 1],
+    [row - 4, col - 1],
+    [row - 6, col - 2],
+    [row - 6, col - 3],
+    [row - 6, col - 4],
+    [row - 2, col - 6],
+    [row - 3, col - 6],
+    [row - 4, col - 6],
+    // Upper right arm
+    [row - 1, col + 2],
+    [row - 1, col + 3],
+    [row - 1, col + 4],
+    [row - 2, col + 1],
+    [row - 3, col + 1],
+    [row - 4, col + 1],
+    [row - 6, col + 2],
+    [row - 6, col + 3],
+    [row - 6, col + 4],
+    [row - 2, col + 6],
+    [row - 3, col + 6],
+    [row - 4, col + 6],
+    // Lower left arm
+    [row + 1, col - 2],
+    [row + 1, col - 3],
+    [row + 1, col - 4],
+    [row + 2, col - 1],
+    [row + 3, col - 1],
+    [row + 4, col - 1],
+    [row + 6, col - 2],
+    [row + 6, col - 3],
+    [row + 6, col - 4],
+    [row + 2, col - 6],
+    [row + 3, col - 6],
+    [row + 4, col - 6],
+    // Lower right arm
+    [row + 1, col + 2],
+    [row + 1, col + 3],
+    [row + 1, col + 4],
+    [row + 2, col + 1],
+    [row + 3, col + 1],
+    [row + 4, col + 1],
+    [row + 6, col + 2],
+    [row + 6, col + 3],
+    [row + 6, col + 4],
+    [row + 2, col + 6],
+    [row + 3, col + 6],
+    [row + 4, col + 6],
+  ]);
 };
 const drawGlider = (row, col) => {
-    universe.draw([
-        [row, col],
-        [row + 1, col],
-        [row, col + 1],
-        [row - 1, col + 1],
-        [row - 1, col - 1],
-    ]);
+  universe.draw([
+    [row, col],
+    [row + 1, col],
+    [row, col + 1],
+    [row - 1, col + 1],
+    [row - 1, col - 1],
+  ]);
 };
 
 const fps = new class {
-    constructor() {
-        this.fps = document.getElementById("fps");
-        this.frames = [];
-        this.lastFrameTimestamp = performance.now();
+  constructor() {
+    this.fps = document.getElementById("fps");
+    this.frames = [];
+    this.lastFrameTimestamp = performance.now();
+  }
+
+  render() {
+    const now = performance.now();
+    const delta = now - this.lastFrameTimestamp;
+    this.lastFrameTimestamp = now;
+    const fps = 1 / delta * 1000;
+
+    this.frames.push(fps);
+
+    if (this.frames.length > 100) {
+      // moves array along by one, earliest entry gone
+      this.frames.shift();
     }
 
-    render() {
-        const now = performance.now();
-        const delta = now - this.lastFrameTimestamp;
-        this.lastFrameTimestamp = now;
-        const fps = 1 / delta * 1000;
+    let min = Infinity;
+    let max = -Infinity;
 
-        this.frames.push(fps);
+    let sum = 0;
 
-        if (this.frames.length > 100) {
-            // moves array along by one, earliest entry gone
-            this.frames.shift();
-        }
+    for (let i = 0; i < this.frames.length; i++) {
+      sum += this.frames[i];
+      min = Math.min(this.frames[i], min);
+      max = Math.max(this.frames[i], max);
+    }
 
-        let min = Infinity;
-        let max = -Infinity;
+    let mean = sum / this.frames.length;
 
-        let sum = 0;
-
-        for (let i = 0; i < this.frames.length; i++) {
-            sum += this.frames[i];
-            min = Math.min(this.frames[i], min);
-            max = Math.max(this.frames[i], max);
-        }
-
-        let mean = sum / this.frames.length;
-
-        this.fps.textContent = `
+    this.fps.textContent = `
         Frames per second:
         latest = ${Math.round(fps)}
         avg of last 100 = ${Math.round(mean)}
         min of last 100 = ${Math.round(min)}
         max of last 100 = ${Math.round(max)}
         `.trim();
-    }
+  }
 }();
 
 canvas.addEventListener("click", (e) => {
-    console.log(e);
-    const boundingRect = canvas.getBoundingClientRect();
+  const boundingRect = canvas.getBoundingClientRect();
 
-    const scaleX = canvas.width / boundingRect.width;
-    const scaleY = canvas.height / boundingRect.height;
+  const scaleX = canvas.width / boundingRect.width;
+  const scaleY = canvas.height / boundingRect.height;
 
-    const canvasLeft = (e.clientX - boundingRect.left) * scaleX;
-    const canvasTop = (e.clientY - boundingRect.top) * scaleY;
+  const canvasLeft = (e.clientX - boundingRect.left) * scaleX;
+  const canvasTop = (e.clientY - boundingRect.top) * scaleY;
 
-    const row = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height - 1);
-    const col = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), width - 1);
+  const row = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height - 1);
+  const col = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), width - 1);
 
-    switch (true) {
-        case e.ctrlKey:
-        case e.metaKey:
-            drawGlider(row, col);
-            break;
-        case e.shiftKey:
-            drawPulsar(row, col);
-            break;
-        default:
-            universe.draw([[row, col]]);
-            break;
-    }
+  switch (true) {
+    case e.ctrlKey:
+    case e.metaKey:
+      drawGlider(row, col);
+      break;
+    case e.shiftKey:
+      drawPulsar(row, col);
+      break;
+    default:
+      universe.draw([[row, col]]);
+      break;
+  }
 
-    drawGrid();
-    drawCells();
+  drawGrid();
+  drawCells();
 });
 
 const isPaused = () => {
-    return animationId === null;
+  return animationId === null;
 };
 
 const renderLoop = () => {
-    fps.render();
-    //debugger;
+  fps.render();
+  //debugger;
+  if (TPF === 1) {
     universe.tick();
+  } else {
+    for (let i = 0; i < TPF; i++) {
+      universe.tick();
+    }
+  }
 
-    drawGrid();
-    drawCells();
+  drawGrid();
+  drawCells();
 
-    animationId = requestAnimationFrame(renderLoop);
+  animationId = requestAnimationFrame(renderLoop);
 };
 
 const playPauseButton = document.getElementById("play-pause");
 const clearButton = document.getElementById("clear");
 const restartButton = document.getElementById("restart");
+const ticksRangeSlider = document.getElementById("ticks-per-frame");
+
+if (ticksRangeSlider.value !== 1) {
+    console.log(ticksRangeSlider.value);
+    TPF = ticksRangeSlider.value;
+}
 
 const play = () => {
-    playPauseButton.textContent = "⏸️";
-    renderLoop();
+  playPauseButton.textContent = "⏸️";
+  renderLoop();
 };
 
 const pause = () => {
-    playPauseButton.textContent = "▶️";
-    cancelAnimationFrame(animationId);
-    animationId = null;
+  playPauseButton.textContent = "▶️";
+  cancelAnimationFrame(animationId);
+  animationId = null;
 };
 
 const clear = () => {
-    // TODO:
-    console.log("clear button clicked");
-    pause();
-    universe.clear();
-    drawGrid();
-    drawCells();
+  pause();
+  universe.clear();
+  drawGrid();
+  drawCells();
 };
 
 // TODO: getting a weird loop here
 const restart = () => {
-    universe.reset();
-    play();
+  universe.reset();
+  play();
+};
+
+const setTPF = (e) => {
+  console.log(e.target.value);
+  TPF = e.target.value;
 };
 
 clearButton.addEventListener("click", () => {
-    clear();
+  clear();
 });
 
 playPauseButton.addEventListener("click", () => {
-    if (isPaused()) {
-        play();
-    } else {
-        pause();
-    }
+  if (isPaused()) {
+    play();
+  } else {
+    pause();
+  }
 });
 
 restartButton.addEventListener("click", () => {
-    restart();
+  restart();
+});
+
+ticksRangeSlider.addEventListener("change", (e) => {
+  setTPF(e);
 });
 
 play();
