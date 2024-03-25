@@ -165,7 +165,7 @@ const fps = new class {
             max = Math.max(this.frames[i], max);
         }
 
-        let mean = sum / this.frames.length;
+        const mean = sum / this.frames.length;
 
         this.fps.textContent = `
         Frames per second:
@@ -233,17 +233,16 @@ const restartButton = document.getElementById("restart");
 const ticksRangeSlider = document.getElementById("ticks-per-frame");
 
 if (ticksRangeSlider.value !== 1) {
-    console.log(ticksRangeSlider.value);
     TPF = ticksRangeSlider.value;
 }
 
 const play = () => {
-    playPauseButton.textContent = "⏸️";
+    playPauseButton.textContent = "Pause";
     renderLoop();
 };
 
 const pause = () => {
-    playPauseButton.textContent = "▶️";
+    playPauseButton.textContent = "Play";
     cancelAnimationFrame(animationId);
     animationId = null;
 };
@@ -262,7 +261,6 @@ const restart = () => {
 };
 
 const setTPF = (e) => {
-    console.log(e.target.value);
     TPF = e.target.value;
 };
 
